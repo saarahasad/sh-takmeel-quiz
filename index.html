@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sahih al-Bukhari — Quiz</title>
+<title>Sahih al-Bukhari</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Outfit:wght@400;500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -12,21 +12,21 @@
     --primary:#146356;
     --primary-dark:#0C4338;
     --primary-light:#1F8A75;
-    --primary-container:#D7EFE6;
+    --primary-container:#f0faf7;
     --on-primary:#FBF7EE;
     --gold:#BC8A23;
     --gold-light:#E2BB5C;
     --gold-pale:#F4E6BD;
-    --surface:#FBF7EE;
-    --surface-2:#F2EAD4;
-    --surface-3:#EADFBE;
+    --surface:#ffffff;
+    --surface-2:#f5f5f5;
+    --surface-3:#e8e8e8;
     --on-surface:#231F16;
     --on-surface-soft:#6B6354;
-    --outline:#DCCFA3;
-    --red:#C8473F;
-    --blue:#2E6FA0;
-    --yellow:#C98F1F;
-    --green:#3C8757;
+    --outline:#e0e0e0;
+    --red:#E21B3C;
+    --blue:#1368CE;
+    --yellow:#D89E00;
+    --green:#26890C;
     --shadow-1: 0 1px 2px rgba(35,28,10,.10), 0 1px 4px rgba(35,28,10,.08);
     --shadow-2: 0 2px 4px rgba(35,28,10,.10), 0 4px 14px rgba(35,28,10,.12);
     --shadow-3: 0 6px 12px rgba(35,28,10,.14), 0 2px 4px rgba(35,28,10,.10);
@@ -35,16 +35,35 @@
     --r-pill:100px;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;padding:0;height:100%;}
   body{
-    background:
-      radial-gradient(circle at 12% 8%, rgba(188,138,35,.08), transparent 40%),
-      radial-gradient(circle at 88% 92%, rgba(20,99,86,.08), transparent 40%),
-      var(--surface);
+    background:#ffffff;
     color:var(--on-surface);
     font-family:'Inter',sans-serif;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
+  }
+  body.quiz-mode{overflow:hidden;}
+  body.quiz-mode .app-shell{
+    min-height:100vh;
+    height:100vh;
+    padding:16px 40px 20px;
+  }
+  body.quiz-mode .top-bar,
+  body.quiz-mode .progress-track{display:none !important;}
+  body.quiz-mode #screenQuiz.active{
+    flex:1;
+    min-height:0;
+  }
+  body.quiz-mode .q-card{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    max-width:none;
+    border:none;
+    box-shadow:none;
+    padding:24px 32px 16px;
   }
   .headline{font-family:'Outfit',sans-serif;}
   .arabic{font-family:'Amiri',serif;direction:rtl;}
@@ -68,13 +87,10 @@
     display:flex;
     flex-direction:column;
   }
-  .screen.active{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
 
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  /* Start screen */
   .top-bar{
     display:flex;align-items:center;justify-content:space-between;gap:16px;
     margin-bottom:18px;
@@ -117,10 +133,13 @@
 
   /* ---------- Screens ---------- */
   .screen{display:none;}
-  .screen.active{display:block;animation:fadeUp .45s cubic-bezier(.2,.7,.2,1);}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-
-  /* Start screen */
+  .screen.active{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    justify-content:center;
+    animation:fadeUp .45s cubic-bezier(.2,.7,.2,1);
+  }
   .hero-card{
     background:var(--surface);
     border-radius:28px;
@@ -134,10 +153,7 @@
     margin:0 auto;
     width:100%;
   }
-  .hero-card::after{
-    content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;
-    background:radial-gradient(circle, var(--primary-container), transparent 70%);
-  }
+  .hero-card::after{display:none;}
   .hero-kicker{
     font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;
   }
@@ -148,11 +164,6 @@
   .hero-sub{
     font-size:16px;color:var(--on-surface-soft);max-width:480px;margin:0 auto 30px;line-height:1.6;
   }
-  .hero-stats{
-    display:flex;justify-content:center;gap:28px;margin-bottom:34px;flex-wrap:wrap;
-  }
-  .hero-stat b{display:block;font-family:'Outfit',sans-serif;font-size:24px;color:var(--primary);}
-  .hero-stat span{font-size:12px;color:var(--on-surface-soft);}
 
   .btn{
     font-family:'Outfit',sans-serif;
@@ -193,83 +204,91 @@
     background:var(--gold-pale);color:var(--gold);
     padding:5px 11px;border-radius:100px;
   }
-  .q-count{font-size:12.5px;color:var(--on-surface-soft);font-weight:600;}
+  .q-count{font-size:14px;color:var(--on-surface-soft);font-weight:600;}
   .q-text{
-    font-family:'Outfit',sans-serif;font-weight:700;font-size:clamp(24px,3.2vw,36px);
-    line-height:1.35;color:var(--on-surface);margin:0 0 32px;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);
+    line-height:1.3;color:var(--on-surface);margin:0 0 36px;
   }
+
 
   .opts{display:grid;gap:14px;}
-  .opts.mcq{grid-template-columns:1fr 1fr;}
-  .opts.ms{grid-template-columns:1fr 1fr;}
-  @media (max-width:560px){.opts.mcq,.opts.ms{grid-template-columns:1fr;}}
+  .opts.mcq,.opts.ms,.opts.tf{grid-template-columns:1fr 1fr;}
+  .opts.count-3 .opt:nth-child(3){
+    grid-column:1 / -1;
+    max-width:calc(50% - 7px);
+    justify-self:center;
+  }
+  @media (max-width:640px){
+    .opts.mcq,.opts.ms,.opts.tf{grid-template-columns:1fr;}
+    .opts.count-3 .opt:nth-child(3){max-width:none;}
+  }
 
   .opt{
-    display:flex;align-items:center;gap:12px;
+    display:flex;align-items:center;gap:16px;
     text-align:left;
-    border:none;border-radius:var(--r-btn);
-    padding:18px 20px;
-    font-family:'Inter',sans-serif;font-weight:600;font-size:clamp(15px,1.8vw,19px);
+    border:none;
+    border-radius:14px;
+    padding:22px 24px;
+    min-height:88px;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:clamp(17px,2vw,22px);
     color:#fff;
-    cursor:pointer;position:relative;overflow:hidden;
-    box-shadow:var(--shadow-1);
-    transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease, filter .2s ease;
+    cursor:default;
+    box-shadow:0 5px 0 rgba(0,0,0,.18);
+    transition:opacity .2s ease, box-shadow .2s ease, transform .15s ease;
   }
-  .opt:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);}
-  .opt:active{transform:translateY(0);}
-  .opt .shape{width:22px;height:22px;flex:none;fill:rgba(255,255,255,.95);}
   .opt.c-red{background:var(--red);}
   .opt.c-blue{background:var(--blue);}
   .opt.c-yellow{background:var(--yellow);}
   .opt.c-green{background:var(--green);}
 
-  .opts.tf{grid-template-columns:1fr 1fr;}
-  @media (max-width:480px){.opts.tf{grid-template-columns:1fr;}}
-  .opt.tf-true{background:var(--green);}
-  .opt.tf-false{background:var(--red);}
-  .opt.tf-opt{justify-content:center;font-size:16px;padding:18px;}
-
-  .opt[disabled]{cursor:default;}
-  .opt.dim{opacity:.38;filter:grayscale(.3);transform:none !important;}
-  .opt.is-selected{box-shadow:0 0 0 3px #fff, 0 0 0 5px var(--primary-light), var(--shadow-2);}
-  .opt.is-correct{box-shadow:0 0 0 3px var(--gold), var(--shadow-2);}
-  .opt.is-wrong{box-shadow:0 0 0 3px rgba(0,0,0,.25), var(--shadow-1);}
-  .opt.is-correct::after, .opt.is-wrong::after{
-    content:''; margin-left:auto; width:18px;height:18px;flex:none;
+  .opt-letter{
+    width:48px;height:48px;flex:none;
+    border-radius:10px;
+    background:rgba(255,255,255,.28);
+    color:#fff;
+    font-family:'Outfit',sans-serif;
+    font-weight:800;font-size:26px;
+    display:flex;align-items:center;justify-content:center;
+    text-shadow:0 1px 2px rgba(0,0,0,.15);
   }
+  .opt-text{flex:1;line-height:1.35;}
 
-  .feedback{
-    display:flex;align-items:flex-start;gap:10px;
-    margin-top:22px;padding:16px 18px;border-radius:16px;
-    font-size:14px;line-height:1.55;
+  .opt.is-correct{
+    box-shadow:0 0 0 4px #fff, 0 0 0 8px #FFC107, 0 5px 0 rgba(0,0,0,.18);
+    transform:scale(1.02);
+  }
+  .opt.dim{opacity:.35;transform:none;box-shadow:none;}
+
+  .answer-reveal{
+    display:none;
+    margin-top:24px;padding:18px 22px;border-radius:14px;
+    font-size:clamp(16px,1.8vw,19px);line-height:1.55;
+    background:var(--primary-container);color:var(--primary-dark);
     animation:fadeUp .35s ease;
   }
-  .feedback.good{background:var(--primary-container);color:var(--primary-dark);}
-  .feedback.bad{background:#F6E2E0;color:#7E2C26;}
-  .feedback svg{width:18px;height:18px;flex:none;margin-top:1px;}
+  .answer-reveal.show{display:block;}
+  .answer-reveal b{font-family:'Outfit',sans-serif;color:var(--primary);}
 
-  .next-row{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;}
-  .btn-submit{
+  .presenter-row{
+    display:flex;justify-content:center;align-items:center;gap:14px;
+    margin-top:auto;padding-top:28px;flex-wrap:wrap;
+  }
+  .btn-nav{
+    background:#fff;color:var(--primary);border:2px solid var(--primary);
+    border-radius:var(--r-pill);padding:14px 28px;
+    font-family:'Outfit',sans-serif;font-weight:600;font-size:16px;
+    cursor:pointer;transition:background .15s ease;
+  }
+  .btn-nav:hover{background:var(--primary-container);}
+  .btn-nav:disabled{opacity:.35;cursor:not-allowed;}
+  .btn-reveal{
     background:var(--gold);color:#fff;border:none;
-    border-radius:var(--r-pill);padding:14px 26px;
-    font-family:'Outfit',sans-serif;font-weight:600;font-size:15px;
-    display:none;align-items:center;gap:8px;cursor:pointer;
-    box-shadow:var(--shadow-2);position:relative;overflow:hidden;
-    transition:transform .15s ease;
+    border-radius:var(--r-pill);padding:14px 32px;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;
+    cursor:pointer;box-shadow:var(--shadow-1);
   }
-  .btn-submit.show{display:inline-flex;animation:fadeUp .35s ease;}
-  .btn-submit:hover{transform:translateY(-1px);}
-  .btn-fab{
-    background:var(--primary);color:var(--on-primary);border:none;
-    border-radius:var(--r-pill);padding:14px 26px;
-    font-family:'Outfit',sans-serif;font-weight:600;font-size:14.5px;
-    display:none;align-items:center;gap:8px;cursor:pointer;
-    box-shadow:var(--shadow-2);position:relative;overflow:hidden;
-    transition:transform .15s ease;
-  }
-  .btn-fab.show{display:inline-flex;animation:fadeUp .35s ease;}
-  .btn-fab:hover{transform:translateY(-1px);}
-  .btn-fab svg{width:16px;height:16px;}
+  .btn-reveal:hover{box-shadow:var(--shadow-2);}
+  .btn-reveal:disabled{opacity:.4;cursor:not-allowed;}
 
   /* Results screen */
   .result-card{
@@ -331,11 +350,11 @@
       <div class="brand">
         <div class="brand-mark"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg></div>
         <div class="brand-text">
-          <div class="eyebrow">Takmeel · Hadith Studies</div>
-          <div class="title">Sahih al-Bukhari — Quiz</div>
+          <div class="eyebrow">Takmeel - Hadith Studies</div>
+          <div class="title">Sahih al-Bukhari</div>
         </div>
       </div>
-      <div class="score-chip" id="scoreChip" style="display:none;">
+      <div class="score-chip" id="scoreChip" style="display:none !important;">
         <svg viewBox="0 0 24 24"><use href="#i-sparkle"/></svg>
         <span id="scoreText">Score: 0</span>
       </div>
@@ -348,17 +367,8 @@
     <!-- START SCREEN -->
     <section class="screen active" id="screenStart">
       <div class="hero-card">
-        <div class="hero-kicker">Hadith Studies Quiz</div>
-        <h1 class="hero-title">Sahih al-Bukhari<br>Quiz</h1>
-        <p class="hero-sub">Test your knowledge on Imam al-Bukhari, the six books of hadith, and the teachings of the Prophet ﷺ.</p>
-        <div class="hero-stats">
-          <div class="hero-stat"><b id="totalQuestions">44</b><span>Questions</span></div>
-          <div class="hero-stat"><b>MCQ</b><span>&amp; Multi-Select</span></div>
-        </div>
-        <button class="btn btn-primary" id="btnStart">
-          <svg viewBox="0 0 24 24"><use href="#i-lamp"/></svg>
-          Start Quiz
-        </button>
+        <h1 class="hero-title">Sahih al-Bukhari</h1>
+        <button class="btn btn-primary" id="btnStart">Start Quiz</button>
       </div>
     </section>
 
@@ -371,10 +381,11 @@
         </div>
         <h2 class="q-text" id="qText"></h2>
         <div class="opts" id="qOpts"></div>
-        <div class="feedback" id="qFeedback" style="display:none;"></div>
-        <div class="next-row">
-          <button class="btn-submit" id="btnSubmit">Submit Answer</button>
-          <button class="btn-fab" id="btnNext">Next Question <svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></button>
+        <div class="answer-reveal" id="answerReveal"></div>
+        <div class="presenter-row">
+          <button class="btn-nav" id="btnPrev">Previous</button>
+          <button class="btn-reveal" id="btnReveal">Reveal Answer</button>
+          <button class="btn-nav" id="btnNext">Next Question</button>
         </div>
       </div>
     </section>
@@ -383,13 +394,10 @@
     <section class="screen" id="screenResults">
       <div class="result-card">
         <div class="result-icon"><svg viewBox="0 0 24 24"><use href="#i-trophy"/></svg></div>
-        <div class="result-score"><span id="resultScore">0</span><span id="resultTotal"> / 44 correct</span></div>
-        <p class="result-msg" id="resultMsg"></p>
+        <h2 class="hero-title" style="margin-bottom:12px;">Quiz Complete!</h2>
+        <p class="result-msg">You finished all <span id="resultTotal">43</span> questions. JazakAllah khair for participating!</p>
         <div class="btn-row">
-          <button class="btn btn-primary" id="btnRestart">
-            <svg viewBox="0 0 24 24"><use href="#i-lamp"/></svg>
-            Replay Quiz
-          </button>
+          <button class="btn btn-primary" id="btnRestart">Start Over</button>
         </div>
       </div>
     </section>
@@ -403,30 +411,30 @@
    DATA
 --------------------------------------------------- */
 const QUESTIONS = [
-  {type:'mcq', tag:'Hadith & Narrators', q:'Who narrated the hadith "Actions are judged by intentions"?', opts:['Abu Hurairah','Umar ibn al-Khattab','Aisha bint Abi Bakr','Abdullah ibn Umar'], correct:1, note:"Umar ibn al-Khattab narrated this hadith — it's placed first in Sahih al-Bukhari for a reason."},
-  {type:'mcq', tag:'Hadith & Narrators', q:'Who narrated the most hadith among the Companions?', opts:['Abdullah ibn Abbas','Abdullah ibn Umar','Abu Hurairah','Anas ibn Malik'], correct:2, note:'Abu Hurairah stayed close to the Prophet ﷺ and narrated more hadith than any other Companion.'},
-  {type:'mcq', tag:'Key Terms', q:'What does "isnad" refer to?', opts:['The text of the hadith','The chapter title','The chain of narrators','The explanation'], correct:2, note:'Isnad is the chain of narrators that carries a hadith back to the Prophet ﷺ.'},
+  {type:'mcq', tag:'Hadith & Narrators', q:'Who narrated the hadith "Actions are judged by intentions"?', opts:['Abu Hurairah','Umar ibn al-Khattab','Aisha bint Abi Bakr','Abdullah ibn Umar'], correct:1, note:"Umar ibn al-Khattab narrated this hadith - it's placed first in Sahih al-Bukhari for a reason."},
+  {type:'mcq', tag:'Hadith & Narrators', q:'Who narrated the most hadith among the Companions?', opts:['Abdullah ibn Abbas','Abdullah ibn Umar','Abu Hurairah','Anas ibn Malik'], correct:2, note:'Abu Hurairah stayed close to the Prophet (s.a.w) and narrated more hadith than any other Companion.'},
+  {type:'mcq', tag:'Key Terms', q:'What does "isnad" refer to?', opts:['The text of the hadith','The chapter title','The chain of narrators','The explanation'], correct:2, note:'Isnad is the chain of narrators that carries a hadith back to the Prophet (s.a.w).'},
   {type:'mcq', tag:'Key Terms', q:'What does "matn" refer to?', opts:['The chain of narrators','The actual text of the hadith','The compiler','The commentary'], correct:1, note:'Matn is the actual wording being narrated, as opposed to the chain that carries it.'},
-  {type:'mcq', tag:'Complete the Hadith', q:'Complete the hadith: "Religion is ________."', opts:['Worship','Sincerity (Nasihah)','Prayer','Knowledge'], correct:1, note:'The Prophet ﷺ defined religion itself as sincerity — to Allah, His Book, His Messenger, and the believers.'},
+  {type:'mcq', tag:'Complete the Hadith', q:'Complete the hadith: "Religion is ________."', opts:['Worship','Sincerity (Nasihah)','Prayer','Knowledge'], correct:1, note:'The Prophet (s.a.w) defined religion itself as sincerity - to Allah, His Book, His Messenger, and the believers.'},
   {type:'mcq', tag:'Companions', q:'Which Companion was known as "the scholar of the Ummah"?', opts:['Abdullah ibn Abbas','Abu Hurairah','Bilal ibn Rabah','Salman al-Farisi'], correct:0, note:'Ibn Abbas was so deeply learned in Qur\'an and Hadith that this title stayed with him.'},
-  {type:'mcq', tag:'Complete the Hadith', q:'Complete the hadith: "Allah does not look at your appearance or wealth, but He looks at your hearts and your ________."', opts:['Knowledge','Actions','Families','Intentions'], correct:1, note:'Outward appearance carries little weight — Allah weighs the heart and the deeds.'},
-  {type:'mcq', tag:'Companions', q:'Which Companion served the Prophet ﷺ for approximately ten years and narrated many hadiths?', opts:['Anas ibn Malik','Abu Hurairah','Abdullah ibn Umar','Muadh ibn Jabal'], correct:0, note:'Anas ibn Malik served the Prophet ﷺ from childhood, preserving countless details of his daily life.'},
-  {type:'mcq', tag:'Sahih al-Bukhari', q:"What is the title of Imam al-Bukhari's famous collection?", opts:['Al-Muwatta','Sahih Muslim',"Al-Jami' al-Sahih",'Sunan Abi Dawud'], correct:2, note:'"Sahih al-Bukhari" is the short name — the full title is Al-Jami\' al-Sahih.'},
+  {type:'mcq', tag:'Complete the Hadith', q:'Complete the hadith: "Allah does not look at your appearance or wealth, but He looks at your hearts and your ________."', opts:['Knowledge','Actions','Families','Intentions'], correct:1, note:'Outward appearance carries little weight - Allah weighs the heart and the deeds.'},
+  {type:'mcq', tag:'Companions', q:'Which Companion served the Prophet (s.a.w) for approximately ten years and narrated many hadiths?', opts:['Anas ibn Malik','Abu Hurairah','Abdullah ibn Umar','Muadh ibn Jabal'], correct:0, note:'Anas ibn Malik served the Prophet (s.a.w) from childhood, preserving countless details of his daily life.'},
+  {type:'mcq', tag:'Sahih al-Bukhari', q:"What is the title of Imam al-Bukhari's famous collection?", opts:['Al-Muwatta','Sahih Muslim',"Al-Jami' al-Sahih",'Sunan Abi Dawud'], correct:2, note:'"Sahih al-Bukhari" is the short name - the full title is Al-Jami\' al-Sahih.'},
   {type:'mcq', tag:'Companions', q:'Which female Companion is among the greatest narrators of hadith?', opts:['Khadijah bint Khuwaylid','Aisha bint Abi Bakr','Hafsa bint Umar','Umm Salama'], correct:1, note:"Aisha (RA) is one of the most prolific and trusted narrators in all of hadith literature."},
-  {type:'mcq', tag:'Sahih al-Bukhari', q:'Sahih al-Bukhari includes teachings on:', opts:['Family life','Ethics','Worship','All of the above'], correct:3, note:"Bukhari's scope is vast — worship, ethics, and family life all sit inside one collection."},
-  {type:'mcq', tag:'Why We Study', q:'What is one goal of studying hadith?', opts:['Winning debates','Following the Prophet ﷺ more closely','Becoming famous','Collecting certificates'], correct:1, note:"Studying hadith isn't an academic exercise — it's a path to walking closer to the Prophet's ﷺ example."},
+  {type:'mcq', tag:'Sahih al-Bukhari', q:'Sahih al-Bukhari includes teachings on:', opts:['Family life','Ethics','Worship','All of the above'], correct:3, note:"Bukhari's scope is vast - worship, ethics, and family life all sit inside one collection."},
+  {type:'mcq', tag:'Why We Study', q:'What is one goal of studying hadith?', opts:['Winning debates','Following the Prophet (s.a.w) more closely','Becoming famous','Collecting certificates'], correct:1, note:"Studying hadith isn't an academic exercise - it's a path to walking closer to the example of the Prophet (s.a.w)."},
   {type:'mcq', tag:'Why We Study', q:'Learning hadith can strengthen:', opts:['Knowledge and faith','Physical height','Wealth automatically','Athletic ability'], correct:0, note:'Real knowledge is meant to show up in both the mind and the heart.'},
   {type:'mcq', tag:'Sahih al-Bukhari', q:'Imam al-Bukhari traveled extensively to:', opts:['Trade goods','Collect and verify hadith','Serve as a ruler','Build libraries'], correct:1, note:'He is said to have traveled across the Muslim world for years gathering and verifying hadith.'},
   {type:'mcq', tag:'Why We Study', q:'The best attitude when hearing an authentic hadith is:', opts:['Respect and willingness to learn','Mockery','Neglect','Anger'], correct:0, note:'An authentic hadith deserves humility and attentiveness, not dismissal.'},
   {type:'mcq', tag:'Why We Study', q:'What should be the ultimate objective of studying Sahih al-Bukhari?', opts:['Academic achievement only','Memorization only',"Seeking Allah's pleasure and following the Sunnah",'Social status'], correct:2, note:"Everything in this kind of study points toward one goal: pleasing Allah by living the Sunnah."},
   {type:'mcq', tag:'Sahih al-Bukhari', q:'In Sunni Islam, Sahih al-Bukhari is generally regarded as:', opts:['Equal to the Qur\'an','The most authentic book after the Qur\'an','A book of fiqh only','A biography'], correct:1, note:"After the Qur'an, Sahih al-Bukhari holds this place in Sunni scholarship."},
-  {type:'mcq', tag:'Key Terms', q:'The word "Sahih" means:', opts:['Ancient','Authentic','Detailed','Written'], correct:1, note:'"Sahih" simply means authentic — verified through a sound chain of transmission.'},
-  {type:'mcq', tag:'Key Terms', q:'Hadith are reports about:', opts:['Ancient kingdoms','The lives of scholars','The sayings, actions, and approvals of the Prophet ﷺ','Arabic grammar'], correct:2, note:'Hadith capture what the Prophet ﷺ said, did, and silently approved of.'},
+  {type:'mcq', tag:'Key Terms', q:'The word "Sahih" means:', opts:['Ancient','Authentic','Detailed','Written'], correct:1, note:'"Sahih" simply means authentic - verified through a sound chain of transmission.'},
+  {type:'mcq', tag:'Key Terms', q:'Hadith are reports about:', opts:['Ancient kingdoms','The lives of scholars','The sayings, actions, and approvals of the Prophet (s.a.w)','Arabic grammar'], correct:2, note:'Hadith capture what the Prophet (s.a.w) said, did, and silently approved of.'},
   {type:'mcq', tag:'Sahih al-Bukhari', q:'Why is Sahih al-Bukhari highly respected?', opts:['It is the oldest book ever written','It contains only stories','It was compiled using strict authentication methods','It was written by a king'], correct:2, note:"Bukhari's rigorous authentication standards are exactly why his collection is so trusted."},
   {type:'mcq', tag:'Foundations', q:'What is the primary source of Islam?', opts:['Hadith','Consensus','The Qur\'an','History'], correct:2, note:"The Qur'an remains Islam's first and foundational source."},
-  {type:'mcq', tag:'Why We Study', q:'Studying Sahih al-Bukhari helps us:', opts:['Understand the Prophet\'s teachings better','Learn mathematics','Study geography','Learn multiple languages'], correct:0, note:"Every hadith studied brings the Prophet's ﷺ example into sharper focus."},
+  {type:'mcq', tag:'Why We Study', q:'Studying Sahih al-Bukhari helps us:', opts:['Understand the Prophet\'s teachings better','Learn mathematics','Study geography','Learn multiple languages'], correct:0, note:"Every hadith studied brings the example of the Prophet (s.a.w) into sharper focus."},
 
-  {type:'tf', tag:'True or False', q:'Imam al-Bukhari personally met every narrator in every chain contained in his Sahih.', correct:1, note:'An isnad spans generations — Bukhari could never have personally met every narrator across centuries.'},
+  {type:'tf', tag:'True or False', q:'Imam al-Bukhari personally met every narrator in every chain contained in his Sahih.', correct:1, note:'An isnad spans generations - Bukhari could never have personally met every narrator across centuries.'},
   {type:'tf', tag:'True or False', q:'Every hadith in Sahih al-Bukhari is repeated only once.', correct:1, note:'Bukhari often repeats a hadith in different chapters to highlight a different ruling it touches on.'},
   {type:'tf', tag:'True or False', q:'Every authentic hadith is found in Sahih al-Bukhari.', correct:1, note:'Many authentic hadiths exist outside Sahih al-Bukhari, preserved in collections like Sahih Muslim and the Sunan.'},
   {type:'tf', tag:'True or False', q:'Imam Muslim was a student of Imam al-Bukhari.', correct:0, note:'Imam Muslim studied under Imam al-Bukhari, among other great scholars of his era.'},
@@ -438,26 +446,26 @@ const QUESTIONS = [
   {type:'tf', tag:'True or False', q:'Sahih al-Bukhari took more than a decade to compile.', correct:0, note:'Bukhari is reported to have spent around sixteen years compiling and verifying his collection.'},
   {type:'tf', tag:'True or False', q:"Imam al-Bukhari's chapter headings are known among scholars as one of the most subtle and profound aspects of the book.", correct:0, note:"Entire commentaries have been written just on the meaning behind Bukhari's chapter titles."},
   {type:'tf', tag:'True or False', q:'A person can understand every legal ruling in Sahih al-Bukhari without studying commentary.', correct:1, note:'Centuries of scholarly commentary (sharh) exist precisely because the rulings need careful unpacking.'},
-  {type:'tf', tag:'True or False', q:'The hadith of Jibril, despite its importance, is not the first hadith in Sahih al-Bukhari.', correct:0, note:'Despite its importance, the hadith of Jibril doesn\'t open the collection — the hadith on intentions does.'},
+  {type:'tf', tag:'True or False', q:'The hadith of Jibril, despite its importance, is not the first hadith in Sahih al-Bukhari.', correct:0, note:'Despite its importance, the hadith of Jibril doesn\'t open the collection - the hadith on intentions does.'},
 
-  {type:'ms', tag:'Multiple Select', q:'Which are the 6 books of Hadith?', opts:['Sahih al-Bukhari · Sahih Muslim','Sunan al-Nasa\'i · Sunan Ibn Majah','Sunan Abu Dawud · Sunan al-Tirmidhi','Sunan Tirmidhi and Sunan Hanafi'], correct:[0,1,2], note:'The six canonical books (Kutub al-Sittah) are Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Sunan al-Tirmidhi, Sunan al-Nasa\'i, and Sunan Ibn Majah.'},
+  {type:'ms', tag:'Multiple Select', q:'Which are the 6 books of Hadith?', opts:['Sahih al-Bukhari and Sahih Muslim','Sunan al-Nasa\'i and Sunan Ibn Majah','Sunan Abu Dawud and Sunan al-Tirmidhi','Sunan Tirmidhi and Sunan Hanafi'], correct:[0,1,2], note:'The six canonical books (Kutub al-Sittah) are Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Sunan al-Tirmidhi, Sunan al-Nasa\'i, and Sunan Ibn Majah.'},
   {type:'mcq', tag:'Imam al-Bukhari', q:'What was the real name of Imam Bukhari?', opts:['Muhammad bin Ibrahim bin Ismail','Muhammad bin Ismail bin Ibrahim','Muhammad bin Mughera'], correct:1, note:'Imam al-Bukhari\'s full name was Muhammad ibn Ismail ibn Ibrahim al-Bukhari.'},
   {type:'ms', tag:'Multiple Select', q:'He authored (wrote)', opts:['Sahih Muslim','Al-Adab al-Mufrad','Sahih Tirmidhi','Quran translation'], correct:[1], note:'Imam al-Bukhari authored Sahih al-Bukhari and Al-Adab al-Mufrad, among other works.'},
   {type:'mcq', tag:'Imam al-Bukhari', q:'He was born in 810 in the city of Bukhara, now called as', opts:['Uzbekistan','Azerbaijan','Afghanistan'], correct:0, note:'Bukhara is located in present-day Uzbekistan.'},
-  {type:'tf', tag:'True or False', q:'His father was alive while he compiled the books of hadith', correct:1, note:'Imam al-Bukhari\'s father passed away when he was still young — long before he compiled his Sahih.'},
-  {type:'mcq', tag:'Imam al-Bukhari', q:'Which quality among these is NOT found in Muhammad bin Ismail?', opts:['Photographic Memory','Seeking the truth (learning about the life of Prophet ﷺ)','Collecting many ahadith and its truthfulness','Made many videos on ahadith'], correct:3, note:'Imam al-Bukhari lived in the 9th century — videos did not exist. He was known for his memory, truthfulness, and dedication to the Sunnah.'},
-  {type:'ms', tag:'Multiple Select', q:'People who need our care and support are ___', opts:['People of Determination','People suffering from disaster','Widows, orphans and refugees','People with less wealth and means'], correct:[0,1,2,3], note:'The Prophet ﷺ taught us to care for the weak, the poor, orphans, widows, refugees, and all those in need.'},
-  {type:'mcq', tag:'Prophetic Teachings', q:'Prophet Muhammad ﷺ has taught us to be ____________ towards weak, poor and needy.', opts:['caring','Merciful','human'], correct:1, note:'The Prophet ﷺ was a mercy to all creation and taught us to show mercy (rahmah) to those in need.'},
-  {type:'mcq', tag:'Prophetic Teachings', q:'Prophet Muhammad ﷺ: "Allah ________ a person as long as he helps his brother"', opts:['cares','forgives'], correct:1, note:'Allah continues to forgive a person as long as that person helps his brother.'},
+  {type:'tf', tag:'True or False', q:'His father was alive while he compiled the books of hadith', correct:1, note:'Imam al-Bukhari\'s father passed away when he was still young - long before he compiled his Sahih.'},
+  {type:'mcq', tag:'Imam al-Bukhari', q:'Which quality among these is NOT found in Muhammad bin Ismail?', opts:['Photographic Memory','Seeking the truth (learning about the life of Prophet (s.a.w))','Collecting many ahadith and its truthfulness','Made many videos on ahadith'], correct:3, note:'Imam al-Bukhari lived in the 9th century - videos did not exist. He was known for his memory, truthfulness, and dedication to the Sunnah.'},
+  {type:'ms', tag:'Multiple Select', q:'People who need our care and support are ___', opts:['People of Determination','People suffering from disaster','Widows, orphans and refugees','People with less wealth and means'], correct:[0,1,2,3], note:'The Prophet (s.a.w) taught us to care for the weak, the poor, orphans, widows, refugees, and all those in need.'},
+  {type:'mcq', tag:'Prophetic Teachings', q:'Prophet Muhammad (s.a.w) has taught us to be ____________ towards weak, poor and needy.', opts:['caring','Merciful','human'], correct:1, note:'The Prophet (s.a.w) was a mercy to all creation and taught us to show mercy (rahmah) to those in need.'},
 ];
 
 /* ---------------------------------------------------
-   STATE
+   STATE (presenter mode for Zoom)
 --------------------------------------------------- */
 let current = 0;
-let score = 0;
-let answered = false;
-let msSelected = new Set();
+let revealed = false;
+
+const LETTERS = 'ABCDEF';
+const KAHOOT_CLASS = ['c-red','c-blue','c-yellow','c-green'];
 
 const els = {
   start: document.getElementById('screenStart'),
@@ -467,149 +475,89 @@ const els = {
   qCount: document.getElementById('qCount'),
   qText: document.getElementById('qText'),
   qOpts: document.getElementById('qOpts'),
-  qFeedback: document.getElementById('qFeedback'),
-  btnSubmit: document.getElementById('btnSubmit'),
+  answerReveal: document.getElementById('answerReveal'),
+  btnPrev: document.getElementById('btnPrev'),
+  btnReveal: document.getElementById('btnReveal'),
   btnNext: document.getElementById('btnNext'),
   progressTrack: document.getElementById('progressTrack'),
   progressFill: document.getElementById('progressFill'),
-  scoreChip: document.getElementById('scoreChip'),
-  scoreText: document.getElementById('scoreText'),
-  resultScore: document.getElementById('resultScore'),
   resultTotal: document.getElementById('resultTotal'),
-  resultMsg: document.getElementById('resultMsg'),
-  totalQuestions: document.getElementById('totalQuestions'),
 };
 
-const shapeIcon = {0:'i-triangle',1:'i-diamond',2:'i-circle',3:'i-square'};
-const shapeClass = {0:'c-red',1:'c-blue',2:'c-yellow',3:'c-green'};
-
-function setsEqual(a, b){
-  if(a.size !== b.size) return false;
-  for(const v of a) if(!b.has(v)) return false;
-  return true;
+function getOptionLabels(data){
+  const opts = data.type === 'tf' ? ['True','False'] : data.opts;
+  return opts.map((_, i) => LETTERS[i]);
 }
 
-function addRipple(btn, evt){
-  const r = document.createElement('span');
-  r.className = 'ripple';
-  const rect = btn.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  r.style.width = r.style.height = size + 'px';
-  r.style.left = (evt.clientX - rect.left - size/2) + 'px';
-  r.style.top = (evt.clientY - rect.top - size/2) + 'px';
-  btn.appendChild(r);
-  setTimeout(()=>r.remove(), 600);
+function getCorrectLabels(data){
+  const labels = getOptionLabels(data);
+  const indices = Array.isArray(data.correct) ? data.correct : [data.correct];
+  return indices.map(i => labels[i]);
 }
 
 function showScreen(name){
-  [els.start, els.quiz, els.results].forEach(s=>s.classList.remove('active'));
-  ({start:els.start, quiz:els.quiz, results:els.results}[name]).classList.add('active');
+  [els.start, els.quiz, els.results].forEach(s => s.classList.remove('active'));
+  ({start: els.start, quiz: els.quiz, results: els.results}[name]).classList.add('active');
+  document.body.classList.toggle('quiz-mode', name === 'quiz');
 }
 
 function renderQuestion(){
-  answered = false;
-  msSelected = new Set();
+  revealed = false;
   const data = QUESTIONS[current];
   els.qTag.textContent = data.tag;
-  els.qCount.textContent = `Question ${current+1} of ${QUESTIONS.length}`;
+  els.qCount.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
   els.qText.textContent = data.q;
-  els.qFeedback.style.display = 'none';
-  els.btnNext.classList.remove('show');
-  els.btnSubmit.classList.remove('show');
-  els.progressFill.style.width = `${(current/QUESTIONS.length)*100}%`;
+  els.progressFill.style.width = `${(current / QUESTIONS.length) * 100}%`;
+
+  els.answerReveal.classList.remove('show');
+  els.answerReveal.innerHTML = '';
+  els.btnReveal.disabled = false;
+  els.btnPrev.disabled = current === 0;
+  els.btnNext.textContent = current === QUESTIONS.length - 1 ? 'Finish Quiz' : 'Next Question';
 
   els.qOpts.innerHTML = '';
-  const layout = data.type === 'tf' ? 'tf' : (data.type === 'ms' ? 'ms' : 'mcq');
-  els.qOpts.className = 'opts ' + layout;
-
   const opts = data.type === 'tf' ? ['True','False'] : data.opts;
+  const layout = data.type === 'tf' ? 'tf' : data.type === 'ms' ? 'ms' : 'mcq';
+  els.qOpts.className = 'opts ' + layout + ' count-' + opts.length;
 
-  opts.forEach((text, idx)=>{
-    const btn = document.createElement('button');
-    btn.className = 'opt';
+  opts.forEach((text, idx) => {
+    const row = document.createElement('div');
+    row.className = 'opt';
     if(data.type === 'tf'){
-      btn.classList.add(idx===0 ? 'tf-true' : 'tf-false', 'tf-opt');
-      btn.innerHTML = `<svg class="shape" viewBox="0 0 24 24"><use href="#${idx===0?'i-check':'i-cross'}"/></svg> ${text}`;
-      btn.addEventListener('click', (e)=>{
-        addRipple(btn, e);
-        selectAnswer(idx, data);
-      });
-    } else if(data.type === 'ms'){
-      btn.classList.add(shapeClass[idx % 4]);
-      btn.innerHTML = `<svg class="shape" viewBox="0 0 24 24"><use href="#${shapeIcon[idx % 4]}"/></svg> ${text}`;
-      btn.addEventListener('click', (e)=>{
-        if(answered) return;
-        addRipple(btn, e);
-        if(msSelected.has(idx)){
-          msSelected.delete(idx);
-          btn.classList.remove('is-selected');
-        } else {
-          msSelected.add(idx);
-          btn.classList.add('is-selected');
-        }
-        els.btnSubmit.classList.toggle('show', msSelected.size > 0);
-      });
+      row.classList.add(idx === 0 ? 'c-green' : 'c-red');
     } else {
-      btn.classList.add(shapeClass[idx]);
-      btn.innerHTML = `<svg class="shape" viewBox="0 0 24 24"><use href="#${shapeIcon[idx]}"/></svg> ${text}`;
-      btn.addEventListener('click', (e)=>{
-        addRipple(btn, e);
-        selectAnswer(idx, data);
-      });
+      row.classList.add(KAHOOT_CLASS[idx % 4]);
     }
-    els.qOpts.appendChild(btn);
+    row.innerHTML = `<span class="opt-letter">${LETTERS[idx]}</span><span class="opt-text">${text}</span>`;
+    els.qOpts.appendChild(row);
   });
-
-  if(data.type === 'ms'){
-    els.btnSubmit.classList.remove('show');
-  }
 }
 
-function revealAnswer(data, isCorrect, selectedIdx){
-  const correctSet = Array.isArray(data.correct) ? new Set(data.correct) : new Set([data.correct]);
-  const allOpts = [...els.qOpts.children];
+function revealAnswer(){
+  if(revealed) return;
+  revealed = true;
+  const data = QUESTIONS[current];
+  const correctSet = new Set(Array.isArray(data.correct) ? data.correct : [data.correct]);
+  const correctLabels = getCorrectLabels(data).join(', ');
 
-  allOpts.forEach((btn, i)=>{
-    btn.disabled = true;
+  [...els.qOpts.children].forEach((row, i) => {
     if(correctSet.has(i)){
-      btn.classList.add('is-correct');
+      row.classList.add('is-correct');
     } else {
-      btn.classList.add('dim');
-      if(selectedIdx !== null && (Array.isArray(selectedIdx) ? selectedIdx.includes(i) : i === selectedIdx)){
-        btn.classList.add('is-wrong');
-      }
+      row.classList.add('dim');
     }
   });
 
-  if(isCorrect) score++;
-
-  els.qFeedback.style.display = 'flex';
-  els.qFeedback.className = 'feedback ' + (isCorrect ? 'good' : 'bad');
-  els.qFeedback.innerHTML = `<svg viewBox="0 0 24 24"><use href="#${isCorrect?'i-good':'i-bad'}"/></svg><div>${isCorrect ? 'Correct! ' : 'Not quite — '}${data.note}</div>`;
-
-  els.scoreChip.style.display = 'flex';
-  els.scoreText.textContent = `Score: ${score}`;
-
-  els.btnSubmit.classList.remove('show');
-  els.btnNext.classList.add('show');
-  els.btnNext.innerHTML = (current === QUESTIONS.length-1)
-    ? `See Results <svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg>`
-    : `Next Question <svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg>`;
+  els.answerReveal.innerHTML = `<b>Correct answer: ${correctLabels}</b> - ${data.note}`;
+  els.answerReveal.classList.add('show');
+  els.btnReveal.disabled = true;
 }
 
-function selectAnswer(idx, data){
-  if(answered) return;
-  answered = true;
-  const isCorrect = idx === data.correct;
-  revealAnswer(data, isCorrect, idx);
-}
-
-function submitMultiSelect(data){
-  if(answered || msSelected.size === 0) return;
-  answered = true;
-  const correctSet = new Set(data.correct);
-  const isCorrect = setsEqual(msSelected, correctSet);
-  revealAnswer(data, isCorrect, [...msSelected]);
+function prevQuestion(){
+  if(current > 0){
+    current--;
+    renderQuestion();
+  }
 }
 
 function nextQuestion(){
@@ -623,45 +571,38 @@ function nextQuestion(){
 
 function finishQuiz(){
   els.progressFill.style.width = '100%';
-  els.resultScore.textContent = score;
-  els.resultTotal.textContent = ` / ${QUESTIONS.length} correct`;
-  const pct = score / QUESTIONS.length;
-  let msg;
-  if(pct >= 0.85){
-    msg = "Excellent work — you have a strong grasp of Sahih al-Bukhari and the teachings of the Prophet ﷺ.";
-  } else if(pct >= 0.5){
-    msg = "Good effort! Review the questions you missed and keep learning.";
-  } else {
-    msg = "Keep studying — every question is a chance to learn more about the Sunnah.";
-  }
-  els.resultMsg.textContent = msg;
+  els.resultTotal.textContent = QUESTIONS.length;
   showScreen('results');
   els.progressTrack.style.display = 'none';
+  document.body.classList.remove('quiz-mode');
 }
 
 function restartQuiz(){
-  current = 0; score = 0; answered = false;
-  els.scoreChip.style.display = 'none';
+  current = 0;
   els.progressTrack.style.display = 'block';
   showScreen('start');
+  document.body.classList.remove('quiz-mode');
 }
 
-document.getElementById('btnStart').addEventListener('click', (e)=>{
-  addRipple(e.currentTarget, e);
-  current = 0; score = 0;
+function startQuiz(){
+  current = 0;
   els.progressTrack.style.display = 'block';
   showScreen('quiz');
   renderQuestion();
-});
+}
 
-els.btnSubmit.addEventListener('click', (e)=>{
-  addRipple(e.currentTarget, e);
-  submitMultiSelect(QUESTIONS[current]);
-});
-els.btnNext.addEventListener('click', (e)=>{ addRipple(e.currentTarget, e); nextQuestion(); });
-document.getElementById('btnRestart').addEventListener('click', (e)=>{ addRipple(e.currentTarget, e); restartQuiz(); });
+document.getElementById('btnStart').addEventListener('click', startQuiz);
+els.btnPrev.addEventListener('click', prevQuestion);
+els.btnReveal.addEventListener('click', revealAnswer);
+els.btnNext.addEventListener('click', nextQuestion);
+document.getElementById('btnRestart').addEventListener('click', restartQuiz);
 
-els.totalQuestions.textContent = QUESTIONS.length;
+document.addEventListener('keydown', (e) => {
+  if(!els.quiz.classList.contains('active')) return;
+  if(e.key === 'ArrowRight' || e.key === 'n' || e.key === 'N') nextQuestion();
+  if(e.key === 'ArrowLeft' || e.key === 'p' || e.key === 'P') prevQuestion();
+  if(e.key === 'r' || e.key === 'R' || e.key === ' ') { e.preventDefault(); revealAnswer(); }
+});
 </script>
 </body>
 </html>
