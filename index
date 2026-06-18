@@ -332,7 +332,6 @@
         <div class="brand-mark"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg></div>
         <div class="brand-text">
           <div class="eyebrow">Takmeel · Hadith Studies</div>
-                    <div class="title">Sahih al-Bukhari — Knowledge Check</div>
           <div class="title">Sahih al-Bukhari — Quiz</div>
         </div>
       </div>
@@ -350,7 +349,7 @@
     <section class="screen active" id="screenStart">
       <div class="hero-card">
         <div class="hero-kicker">Hadith Studies Quiz</div>
-        <h1 class="hero-title">Ṣaḥīḥ al-Bukhārī<br>Quiz</h1>
+        <h1 class="hero-title">Sahih al-Bukhari<br>Quiz</h1>
         <p class="hero-sub">Test your knowledge on Imam al-Bukhari, the six books of hadith, and the teachings of the Prophet ﷺ.</p>
         <div class="hero-stats">
           <div class="hero-stat"><b id="totalQuestions">44</b><span>Questions</span></div>
